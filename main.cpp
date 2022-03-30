@@ -14,7 +14,6 @@
 
 // player specific:
 #include "player/theme.h"
-#include "player/length.h"
 #include "player/list.h"
 
 using namespace std;
