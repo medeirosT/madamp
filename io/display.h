@@ -10,6 +10,7 @@ class display{
 		uint8_t default_brightness;
 		uint8_t brightness;
 		uint8_t timeout_in_seconds;
+		uint8_t fadeout_in_seconds;
 		bool disabled;
 		bool sleeping;
 		bool fading;
@@ -41,7 +42,8 @@ display::display( const char *brightness_file_location, joystick *newjoy,config 
 	fading				= false;
 	disabled			= false;
 	force_val			= cfg->get_int_by_key("forcebacklight", 0) == 1;
-	timeout_in_seconds	= cfg->get_int_by_key("backlighttimeout", 15);
+	timeout_in_seconds	= cfg->get_int_by_key("backlighttimeout", 30);
+	fadeout_in_seconds	= cfg->get_int_by_key("backlightfadetimeout", 15);
 	
 }
 
@@ -52,9 +54,18 @@ void display::loop(void){
 		start_timestamp = SDL_GetTicks();
 		set_brightness(default_brightness);
 		sleeping = false;
-	} else if ( sleeping == false && SDL_GetTicks() - start_timestamp > (timeout_in_seconds*1000)){
-		set_brightness(0);	
-		sleeping = true;	
+		fading = false;
+	} else if (fading == false || sleeping == false){
+		
+		uint32_t timeout = SDL_GetTicks() - start_timestamp;
+		
+		if ( fading == false && timeout >= (fadeout_in_seconds*1000) ){
+			fading = true;
+			set_brightness((int)(default_brightness/2));
+		} else if ( sleeping == false && timeout >= (timeout_in_seconds*1000)){
+			set_brightness(0);	
+			sleeping = true;	
+		}
 	}
 }
 
