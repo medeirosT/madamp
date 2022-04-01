@@ -23,7 +23,7 @@ config maincfg("config.ini");
 engine madamp(maincfg.get_int_by_key("screenwidth",480),maincfg.get_int_by_key("screenheight",320),maincfg.get_int_by_key("framerate",60));
 joystick joy(0);
 Mix_Music *loop;
-display lcd(maincfg.get_string_by_key("backlight"));
+display lcd(maincfg.get_string_by_key("backlight"), &joy);
 
 
 int main() {
@@ -41,9 +41,6 @@ int main() {
     fnt.setRGBSDL(&maintheme.font_color);
     directory musicdir(maincfg.get_string_by_key("musicdir"));
 
-
-    
-    
     
     list playlist(&madamp, &fnt,&maincfg,&maintheme, &joy, &musicdir, loop);
     
@@ -58,12 +55,16 @@ int main() {
         bg.draw();
         playlist.draw();
       
+      	lcd.loop();
         playlist.loop();
         madamp.loop();
     }
 
+	lcd.destroy();
+	
 	playlist.destroy();
     bg.destroy();
     madamp.destroy();
+    
 
 }
