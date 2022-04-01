@@ -9,33 +9,40 @@ class display{
 		char brightness_file[128];
 		uint8_t default_brightness;
 		uint8_t brightness;
+		uint8_t timeout_in_seconds;
 		bool disabled;
 		bool sleeping;
 		bool fading;
+		bool force_val;
 		uint32_t start_timestamp;
 		joystick *joy           = NULL;         	// Reference to the input
+		config *cfg             = NULL;         	// Reference to the config
 	public:
 		uint8_t get_brightness(void);
 		bool set_brightness(uint8_t new_brightness);
-		display( const char *brightness_file_location, joystick *newjoy);
+		display( const char *brightness_file_location, joystick *newjoy,config *maincfg);
 		void destroy(void);
 		void loop(void);
 
 };
 
-#define MS_UNTIL_OFF 2000
 
 
-display::display( const char *brightness_file_location, joystick *newjoy){
+
+display::display( const char *brightness_file_location, joystick *newjoy,config *maincfg){
 	strcpy(brightness_file, brightness_file_location);
 	
 	default_brightness 	= get_brightness();
 	brightness			= default_brightness;
 	joy     			= newjoy;
+	cfg					= maincfg;
 	start_timestamp 	= SDL_GetTicks();
 	sleeping			= false;
 	fading				= false;
 	disabled			= false;
+	force_val			= cfg->get_int_by_key("forcebacklight", 0) == 1;
+	timeout_in_seconds	= cfg->get_int_by_key("backlighttimeout", 15);
+	
 }
 
 
@@ -45,7 +52,7 @@ void display::loop(void){
 		start_timestamp = SDL_GetTicks();
 		set_brightness(default_brightness);
 		sleeping = false;
-	} else if (sleeping == false && SDL_GetTicks() - start_timestamp > MS_UNTIL_OFF ){
+	} else if ( sleeping == false && SDL_GetTicks() - start_timestamp > (timeout_in_seconds*1000)){
 		set_brightness(0);	
 		sleeping = true;	
 	}
@@ -53,7 +60,9 @@ void display::loop(void){
 
 
 uint8_t display::get_brightness(void){
-	if (disabled) return 0;
+	if (disabled && false == force_val) return 0;
+	if (force_val) return cfg->get_int_by_key("forcebacklightvalue",30);
+	
 	int tempbrightness;
 	FILE *fp = fopen(brightness_file, "r");
 	
