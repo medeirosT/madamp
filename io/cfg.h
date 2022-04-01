@@ -173,18 +173,21 @@ bool config::set_string (const char *key, const char *value){
     char out[MAX_LEN];
     
     fp = fopen(filename, "r");
-    tmp= fopen("tmp.cfg", "w");
+    tmp= fopen("tmp.ini", "w");
     // Check if we loaded..
     if (fp == NULL || tmp == NULL){ 
         printf("Error either opening temp file to write, or opening config...\n"); 
         return false;
     }
 
+	bool just_copy = false;
     // Read line by line
     while(fgets(buffer, MAX_LEN, fp)){
-    
-        if (strcmp(key, get_key_from_line(buffer)) == 0){
-        	
+    	just_copy = buffer[0]=='#' || buffer[0]==';' || buffer[0]==' ' || buffer[0] == '\0' || buffer[0] == '[';
+    	if (just_copy){ 
+    		fputs(buffer,tmp);
+    		continue;	
+    	} else if (strcmp(key, get_key_from_line(buffer)) == 0){
         	sprintf(out, "%s=%s\n",key,value);
         	fputs(out, tmp);
         } else {
@@ -196,13 +199,12 @@ bool config::set_string (const char *key, const char *value){
 		} 
     }
     
-    // close the file
+    // close the file 
     fclose(fp);
     fclose(tmp);
     
     remove(filename);
-    rename("tmp.cfg",filename);
-    
+    rename("tmp.ini",filename);
     return true;
 
 
