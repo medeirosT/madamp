@@ -23,7 +23,7 @@ config maincfg("config.ini");
 engine madamp(maincfg.get_int_by_key("screenwidth",480),maincfg.get_int_by_key("screenheight",320),maincfg.get_int_by_key("framerate",60));
 joystick joy(0);
 Mix_Music *loop;
-display lcd(maincfg.get_string_by_key("backlight"), &joy);
+display lcd(maincfg.get_string_by_key("backlight"), &joy, &maincfg);
 
 
 int main() {
