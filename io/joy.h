@@ -23,6 +23,7 @@ class joystick{
         bool r2 = false;            // Button ID 11
         bool r3 = false;            // Button ID 9
         bool quit = false;
+        bool any = false;
         int x1 = 0;
         int y1 = 0;
         int x2 = 0;
@@ -72,6 +73,8 @@ void joystick::poll(void){
 	left	= SDL_GameControllerGetButton(joy, SDL_CONTROLLER_BUTTON_DPAD_LEFT);
 	right	= SDL_GameControllerGetButton(joy, SDL_CONTROLLER_BUTTON_DPAD_RIGHT);
 	
+	
+	
 	x1 = -SDL_GameControllerGetAxis(joy,SDL_CONTROLLER_AXIS_LEFTX);
 	y1 = -SDL_GameControllerGetAxis(joy,SDL_CONTROLLER_AXIS_LEFTY);
 	
@@ -80,6 +83,8 @@ void joystick::poll(void){
 	
 	l2 = (SDL_GameControllerGetAxis(joy,SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 1000);
 	r2 = (SDL_GameControllerGetAxis(joy,SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > 1000);
+	
+	any = (a + b + x + y + start + select + l1 + l2 + l3 + r1 + r2 + r3 + up + down + left + right) >= 1;
 
 }
 
