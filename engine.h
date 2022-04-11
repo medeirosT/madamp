@@ -91,7 +91,12 @@ bool engine::init_gfx(void){
     }
     
     printf("Creating Window\n");
+    #if defined(__x86_64__) || defined(_M_X64) || defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
+    window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_HEIGHT,SCREEN_WIDTH, 0);
+    #else
     window = SDL_CreateWindow("Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_HEIGHT,SCREEN_WIDTH, SDL_WINDOW_FULLSCREEN);
+    #endif
+    
     if (window == NULL){
         printf("Window generating failed\n");
         return false;
