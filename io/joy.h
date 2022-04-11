@@ -3,7 +3,7 @@ class joystick{
         SDL_GameController *joy;
         uint8_t joy_id;
         bool init;
-        
+        bool check_quit(void);
     public:
         joystick(uint8_t index);
         bool up = false;
@@ -84,10 +84,22 @@ void joystick::poll(void){
 	l2 = (SDL_GameControllerGetAxis(joy,SDL_CONTROLLER_AXIS_TRIGGERLEFT) > 1000);
 	r2 = (SDL_GameControllerGetAxis(joy,SDL_CONTROLLER_AXIS_TRIGGERRIGHT) > 1000);
 	
+	quit = check_quit();
+	
 	any = (a + b + x + y + start + select + l1 + l2 + l3 + r1 + r2 + r3 + up + down + left + right) >= 1;
 
 }
 
+bool joystick::check_quit(void){
+	SDL_Event e;
+	while (SDL_PollEvent(&e) != 0){
+		if (e.type == SDL_QUIT) {
+		    return true;
+		    break;
+		}
+	}
+	return false;
+}
 
 void joystick::kill(void){
 	if (init){
