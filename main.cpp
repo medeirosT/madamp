@@ -49,9 +49,8 @@ int main() {
         //madamp.clear_screen();        
         joy.poll();
         
-        main_loop = (false == (joy.start && joy.select));
+        main_loop = (false == (joy.start && joy.select) && !joy.quit);
         
-
         bg.draw();
         playlist.draw();
       
