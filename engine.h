@@ -51,8 +51,15 @@ class engine{
 *   @param {integer} height - screen height to initialize with
 */
 engine::engine( int width, int height, uint8_t max_fps ){
+	// The RG devices are rotated, this fixes the sizing on PC
+	#if defined(__x86_64__) || defined(_M_X64) || defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86)
+    SCREEN_WIDTH = height;
+    SCREEN_HEIGHT = width;
+    #else
     SCREEN_WIDTH = width;
     SCREEN_HEIGHT = height;
+    #endif
+    
     window = NULL;
     renderer = NULL;
     gfx_init = false;
