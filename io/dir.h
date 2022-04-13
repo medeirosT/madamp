@@ -7,6 +7,7 @@ class directory{
     	char path[MAX_PATH];
         bool valid;   
         char files[256][128];
+        bool folder[256];
         int file_count;
     public:
         directory(const char* newdir);
@@ -25,13 +26,35 @@ directory::directory(const char* newdir){
 
 
 bool directory::go_up(void){
+	char temp_path[MAX_PATH];
+	strcpy(temp_path, path);
+	int start = -1;
+	int end = -1; 
+	long unsigned int i;
+	for(i=0;i<strlen(temp_path);i++){
+		if (temp_path[i] == '/'){
+			start = end;
+			end = i;	
+		}
+	}
+	temp_path[start+1]='\0';
+	strcpy(path, temp_path);
+	return load_dir(path);
 	
-
 }
 
 bool directory::open_folder(int index){
-
-
+	// Index = 0 is always ".." so, go up
+	if (index == 0){
+		return go_up();
+	
+	// If not, and it is an actual folder, add it!
+	} else {
+		char temp_path[MAX_PATH-1];
+		strcpy(temp_path, path);
+		sprintf(path, "%s%s/", temp_path, get_file(index));
+		return load_dir(path);
+	}
 }
 
 bool directory::load_dir(const char* newdir){
@@ -44,8 +67,9 @@ bool directory::load_dir(const char* newdir){
     if(d){
     	valid = true;
         while((dir = readdir(d)) != NULL){
-            if( strcmp(dir->d_name,"..") != 0 && strcmp(dir->d_name,".") != 0 ){      
+            if( strcmp(dir->d_name,".") != 0 ){      
                 strcpy(files[file_count], dir->d_name );
+                folder[file_count] = (dir->d_type == DT_DIR);
                 file_count++;
             }
         }
