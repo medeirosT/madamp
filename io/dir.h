@@ -16,6 +16,7 @@ class directory{
 		bool load_dir(const char* newdir);
 		bool go_up(void);
 		bool open_folder(int index);
+		bool is_folder(int index);
 };
 
 /**
@@ -62,11 +63,17 @@ bool directory::go_up(void){
 	
 }
 
+
+/**
+*	Opens the folder by index (Safer than going by character. This way we have
+*	direct access to all file info easily. no need for aditional checks)
+*	@param {int} index -- index of the folder we're attempting to open
+*	@return {bool} whether or not we've succeeded in opening said folder
+*/
 bool directory::open_folder(int index){
 	// Make sure what we're opening is actually a folder
-	if (folder[index] == false || index > file_count){
-		return false;
-	}
+	if (folder[index] == false || index > file_count) return false;
+	
 	// Index = 0 is always ".." so, go up
 	if (index == 0){
 		return go_up();
@@ -80,6 +87,11 @@ bool directory::open_folder(int index){
 	}
 }
 
+/**
+*	Change directories basically.
+*	@param {const char*} newdir - new directory we're changing to.
+*	@return {bool} success of the operation. 
+*/
 bool directory::load_dir(const char* newdir){
 	
 	valid = false;
@@ -101,9 +113,28 @@ bool directory::load_dir(const char* newdir){
 	return valid;
 }
 
-
+/**
+*	Returns the amount of files in the current directory
+*	@param {int} number of files in this folder.
+*/
 int directory::length(void){ return file_count; }
 
+
+/**
+*	Returns whether or not an index is a folder or not.
+*	@param {int} index - index of the file/folder we're checking
+*	@return {bool} whether or not an index file/folder is a folder.
+*/
+bool directory::is_folder(int index){ return folder[index]; }
+
+
+
+
+/**
+*	Gets the name of the file by index.
+*	@param {int} index -- index of the file/folder we're getting
+*	@return {char *} -- name of the file in question.*
+*/
 char * directory::get_file(int index){
     if (index <= file_count && valid){
         char *output = (char *)malloc(strlen(files[index])+1);
