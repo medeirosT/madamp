@@ -63,6 +63,10 @@ bool directory::go_up(void){
 }
 
 bool directory::open_folder(int index){
+	// Make sure what we're opening is actually a folder
+	if (folder[index] == false || index > file_count){
+		return false;
+	}
 	// Index = 0 is always ".." so, go up
 	if (index == 0){
 		return go_up();
