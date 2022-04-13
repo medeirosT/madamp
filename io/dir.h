@@ -18,27 +18,46 @@ class directory{
 		bool open_folder(int index);
 };
 
-
+/**
+*	Class initializer
+*	@param {const char*} newdir -- The directory we're starting at.
+*/
 directory::directory(const char* newdir){
 	strcpy(path, newdir);
 	valid = load_dir(path);
 }
 
 
+/**
+*	Goes up a directory and calls @load_dir
+*	@return {bool} the success of the function
+*/
 bool directory::go_up(void){
+	// Create a copy of the path we're in.
 	char temp_path[MAX_PATH];
 	strcpy(temp_path, path);
+	
+	// Prepare the string manipulation
 	int start = -1;
 	int end = -1; 
 	long unsigned int i;
+	
+	// what we're doing here is looking for the second to last "/" character
+	// And adding a terminator "/0" after it to close up the array, eliminating
+	// a directory
 	for(i=0;i<strlen(temp_path);i++){
 		if (temp_path[i] == '/'){
 			start = end;
 			end = i;	
 		}
 	}
+	// Terminate it
 	temp_path[start+1]='\0';
+	
+	// Copy back to the path variable
 	strcpy(path, temp_path);
+	
+	// Load up the new directory
 	return load_dir(path);
 	
 }
