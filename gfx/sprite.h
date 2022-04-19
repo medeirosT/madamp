@@ -17,6 +17,7 @@ class Sprite {
         void setXY(int x, int y);
         int getY(void);
         int getX(void);
+        SDL_Texture* get_texture(void);
 };
 
 Sprite::Sprite(const char* file, int h, int w, SDL_Renderer* renderer, bool colorkey){
@@ -28,7 +29,6 @@ Sprite::Sprite(const char* file, int h, int w, SDL_Renderer* renderer, bool colo
     
     // Copy renderer reference
     randr = renderer;
-    
     
     // Load picture
     SDL_Surface *image_surface = IMG_Load(file);
@@ -71,6 +71,15 @@ int Sprite::getX(void){
 
 int Sprite::getY(void){
     return size.y;
+
+}
+
+SDL_Texture* Sprite::get_texture(void){
+
+	if (loaded){
+		return Texture;
+	}
+	return NULL;
 
 }
 
