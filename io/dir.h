@@ -13,10 +13,12 @@ class directory{
         directory(const char* newdir);
         int length(void);
         char * get_file(int index);
+        char * get_file_extension(int index);
 		bool load_dir(const char* newdir);
 		bool go_up(void);
 		bool open_folder(int index);
 		bool is_folder(int index);
+		bool is_valid(void);
 };
 
 /**
@@ -127,8 +129,11 @@ int directory::length(void){ return file_count; }
 */
 bool directory::is_folder(int index){ return folder[index]; }
 
-
-
+/**
+*	returns whether or not we're successful in loading a directory's content
+*	@return {bool} returns valid status (true = success, false = failure)
+*/
+bool directory::is_valid(void){ return valid;}
 
 /**
 *	Gets the name of the file by index.
@@ -146,4 +151,33 @@ char * directory::get_file(int index){
     
     }
     return NULL;
+}
+
+char * directory::get_file_extension(int index){
+	char filename[260];
+	char extension[20];
+	int i;
+	int last_dot=-1;
+	int extension_index=0;
+	
+	if (index == 0){ return NULL; }
+	
+	strcpy(filename, get_file(index));
+
+	for(i=0;i<(int)strlen(filename);i++){
+		if(filename[i]=='.'){
+			last_dot=i;
+		}
+	}
+	if (last_dot == -1){ return NULL; }
+	for(i=last_dot+1;i<(int)strlen(filename);i++){
+		// characters below 97 are upper case. Just add 22 to make them lower
+		extension[extension_index]=filename[i] + (filename[i]<97 && filename[i] > 65  ? 32 : 0);
+		extension_index++;
+	}
+	extension[extension_index]='\0';
+	char *output = (char *)malloc(strlen(extension)+1);
+	sprintf(output, "%s", extension);
+	
+	return output;
 }
