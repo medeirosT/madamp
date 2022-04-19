@@ -6,6 +6,7 @@ class theme{
         theme(const char* name);
         char file_bg[150];
         char file_font[150];
+        char icon_path[200];
         char cursor[2];
         int font_size;
         SDL_Color font_color;
@@ -34,6 +35,7 @@ theme::theme(const char* name){
     // Load values
     sprintf(file_bg     	,"%s%s", path, cfg.get_string_by_key("background"));
     sprintf(file_font   	,"%s%s", path, cfg.get_string_by_key("font"));
+    sprintf(icon_path		,"%sicons/", path);
     sprintf(cursor     	 	,"%s", cfg.get_string_by_key("cursor"));
     font_size           	= cfg.get_int_by_key("fontsize",8);
     
