@@ -11,7 +11,11 @@ class filelist{
 		bool has_dir;
 		int cursor_index;
 		int current_start;
+		
 		void load_icons(void);
+		void create_highlight_tex(void);			// Create the highlight bar surface
+		
+		SDL_Rect highlight_rect;
 		SDL_Rect main_rect;
 		
 		SDL_Surface *folder		= NULL;
@@ -19,6 +23,7 @@ class filelist{
 		SDL_Surface *playlist	= NULL;
 		SDL_Surface *unknown	= NULL;
 		
+		SDL_Texture *highlight	= NULL;
 		SDL_Texture *framebuffer= NULL;
 		
 
@@ -61,6 +66,7 @@ filelist::filelist(const char* initial_directory, engine *engine, config *maincf
 	main_rect.x=0;
 	
 	load_icons();
+	create_highlight_tex();
 }
 
 
@@ -160,13 +166,23 @@ void filelist::draw(void){
 		fnt->setY(i*ui->font_size);
 		fnt->draw_to_surface(current_dir.get_file(i), temp);	
 	}
-	//SDL_Rect draw;
 	SDL_SetColorKey(temp, SDL_TRUE, SDL_MapRGB(temp->format, 0, 0, 0));
 	framebuffer = SDL_CreateTextureFromSurface(ref->renderer, temp);
+	
+	
 	SDL_RenderCopy(ref->renderer, framebuffer, NULL, &main_rect);
 	SDL_FreeSurface(temp);
 	
 	
+}
+
+
+void filelist::create_highlight_tex(void){
+	// First we create the rect for the highlight
+	highlight_rect.y = 0;
+	highlight_rect.x = 0
+	highlight_rect.w = main_rect.w;
+	highlight_rect.h = ui->font_size;
 }
 
 void filelist::loop(void){
