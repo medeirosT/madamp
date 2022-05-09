@@ -4,8 +4,6 @@ class engine{
         unsigned short int SCREEN_WIDTH, SCREEN_HEIGHT;
         SDL_Window *window;
         
-        bool debug;
-        
         bool gfx_init;
         bool sfx_init;
         
@@ -36,7 +34,6 @@ class engine{
         SDL_Renderer *renderer;
         void loop(void);
         void draw_square(int x1, int y1, int x2, int y2, SDL_Color *color);
-        void debug_message(const char* msg);
         unsigned short int get_height(void);
         unsigned short int get_width(void);
         
@@ -68,7 +65,6 @@ engine::engine( int width, int height, uint8_t max_fps ){
     last_drawn_frame_timestamp=0;
     fps_limit = max_fps;
     frame_interval = (max_fps == 0 ? 0 : (int)(1000 / fps_limit));
-    debug = true;
 }
 
 unsigned short int engine::get_height(void){
@@ -80,14 +76,6 @@ unsigned short int engine::get_width(void){
 }
 
 
-void engine::debug_message(const char* msg){
-    if (debug){
-        printf(msg);
-        fflush(stdout);
-    } 
-
-
-}
 
 bool engine::init_gfx(void){
     printf("Init Video\n");
@@ -120,7 +108,7 @@ bool engine::init_gfx(void){
     gfx_init = true;
     
     SDL_SetRenderDrawColor(renderer,0,0,0,SDL_ALPHA_OPAQUE);
-    
+    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_CRITICAL);
     return true;
 
 }
@@ -154,9 +142,6 @@ void engine::destroy(void){
 
 }
 
-void engine::disable_debug_mode(void){
-    SDL_LogSetAllPriority(SDL_LOG_PRIORITY_CRITICAL);
-}
 
 
 /**

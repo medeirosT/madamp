@@ -34,7 +34,6 @@ int main() {
     
     madamp.init_gfx();
     madamp.init_sfx();
-    madamp.disable_debug_mode();
     theme maintheme(maincfg.get_string_by_key("theme"));
     
     
