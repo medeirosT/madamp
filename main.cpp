@@ -14,7 +14,9 @@
 
 // player specific:
 #include "player/theme.h"
-#include "player/list.h"
+//#include "player/list.h"
+#include "player/ui/filelist.h"
+
 
 using namespace std;
 
@@ -37,31 +39,36 @@ int main() {
     
     
     background bg(maintheme.file_bg,madamp);
+    bg.draw();
     font fnt(maintheme.file_font,maintheme.font_size,madamp);
     fnt.setRGBSDL(&maintheme.font_color);
-    directory musicdir(maincfg.get_string_by_key("musicdir"));
-
+//    directory musicdir(maincfg.get_string_by_key("musicdir"));
+	filelist explorer(maincfg.get_string_by_key("musicdir"), &madamp, &maincfg, &maintheme, &fnt);
+	
+    explorer.set_height(maincfg.get_int_by_key("screenheight",320	));
+    explorer.set_width( maincfg.get_int_by_key("screenwidth",480	));
     
-    list playlist(&madamp, &fnt,&maincfg,&maintheme, &joy, &musicdir, loop);
+    explorer.draw();
     
     while ( main_loop )
     {
-        //madamp.clear_screen();        
+            
         joy.poll();
-        
         main_loop = (false == (joy.start && joy.select) && !joy.quit);
+        //bg.draw();
         
-        bg.draw();
-        playlist.draw();
+        
+        
+        
+        
+        
       
       	lcd.loop();
-        playlist.loop();
         madamp.loop();
     }
 
 	lcd.destroy();
 	
-	playlist.destroy();
     bg.destroy();
     madamp.destroy();
     
